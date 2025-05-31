@@ -24,6 +24,7 @@ plugins {
     `maven-publish`
     idea
     id("net.neoforged.moddev").version("2.+")
+    id("io.github.jeadyx.sonatype-uploader").version("2.+")
 }
 
 apply(plugin = "io.github.Polari-Stars-MC.mcmeta-plugin")
@@ -226,5 +227,38 @@ idea {
     module {
         isDownloadJavadoc = true
         isDownloadSources = true
+    }
+}
+
+sonatypeUploader {
+    tokenName = properties["central.sonatype.token.name"].toString()
+    tokenPasswd = properties["central.sonatype.token.passwd"].toString()
+    signing = Action {
+        this.keyId = properties["signing.key.id"].toString()
+        this.keyPasswd = properties["signing.key.passwd"].toString()
+        this.secretKeyPath = properties["signing.secret.key"].toString()
+    }
+    pom = Action {
+        name.set(modName)
+        description.set(modDesc)
+        url.set("https://github.com/$githubRep")
+        licenses {
+            license {
+                name.set("MIT")
+                url = "https://mit-license.org/"
+            }
+        }
+        developers {
+            developer {
+                id.set("baka4n")
+                name.set("baka4n")
+                email.set("474899581@qq.com")
+            }//sign authors
+        }
+        scm {
+            connection = "scm:git:git://github.com/$githubRep.git"
+            developerConnection = "scm:git:ssh://github.com/$githubRep.git"
+            url = "https://github.com/$githubRep"
+        }
     }
 }
